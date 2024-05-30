@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QFileDialog, QHBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QFileDialog, QSizePolicy, QHBoxLayout
 from PyQt5.QtGui import QPixmap
 from detect import detect  # Assuming detect and opt are defined in detect.py
 import argparse
@@ -27,6 +27,10 @@ class App(QWidget):
         self.image_label = QLabel(self)
         self.layout.addWidget(self.image_label)
         
+        # Set size policy
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+
         # Result display
         self.result_label = QLabel(self)
         self.layout.addWidget(self.result_label)
@@ -45,7 +49,7 @@ class App(QWidget):
     def display_image(self, file_path):
         pixmap = QPixmap(file_path)
         self.image_label.setPixmap(pixmap)
-        self.image_label.setScaledContents(True)
+        self.image_label.setScaledContents(False)
         
     def run_detection(self, file_path):
         # Update opt.source to the selected image file path
@@ -64,7 +68,7 @@ class App(QWidget):
                 result_image_path = os.path.join(result_image_dir, image_file)
                 result_pixmap = QPixmap(result_image_path)
                 self.image_label.setPixmap(result_pixmap)
-                self.image_label.setScaledContents(True)
+                self.image_label.setScaledContents(False)
         else:
             self.result_label.setText('Detection failed, no result image found.')
             
