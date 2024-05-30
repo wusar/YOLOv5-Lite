@@ -1,8 +1,9 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QFileDialog, QHBoxLayout
-from PyQt5.QtGui import QPixmap, QImage
-# from detect import detect  # Assuming detect and opt are defined in detect.py
+from PyQt5.QtGui import QPixmap
+from detect import detect  # Assuming detect and opt are defined in detect.py
 import argparse
+import os
 
 class App(QWidget):
     def __init__(self):
@@ -38,7 +39,7 @@ class App(QWidget):
         options |= QFileDialog.ReadOnly
         file_name, _ = QFileDialog.getOpenFileName(self, "Open Image File", "", "Images (*.png *.xpm *.jpg *.jpeg);;All Files (*)", options=options)
         if file_name:
-            self.display_image(file_name)
+            # self.display_image(file_name)
             self.run_detection(file_name)
     
     def display_image(self, file_path):
@@ -51,14 +52,19 @@ class App(QWidget):
         opt.source = file_path
         
         # Run detection
-        detect(opt)
-        
+        result_image_dir = detect(opt)
         # Display the result
-        result_image_path = os.path.join(opt.project, opt.name, os.path.basename(file_path))
-        if os.path.exists(result_image_path):
-            result_pixmap = QPixmap(result_image_path)
-            self.result_label.setPixmap(result_pixmap)
-            self.result_label.setScaledContents(True)
+        print("result_image_dir", result_image_dir)
+        # Display all the results in the result_image_dir
+        
+        if os.path.exists(result_image_dir):
+            image_files = os.listdir(result_image_dir)
+
+            for image_file in image_files:
+                result_image_path = os.path.join(result_image_dir, image_file)
+                result_pixmap = QPixmap(result_image_path)
+                self.image_label.setPixmap(result_pixmap)
+                self.image_label.setScaledContents(True)
         else:
             self.result_label.setText('Detection failed, no result image found.')
             
