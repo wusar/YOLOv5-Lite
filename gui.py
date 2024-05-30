@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QFileDialog, QSizePolicy, QMessageBox, QHBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QFileDialog, QSizePolicy, QMessageBox, QComboBox, QHBoxLayout
 from PyQt5.QtGui import QPixmap
 from detect import detect  # Assuming detect and opt are defined in detect.py
 import argparse
@@ -27,10 +27,26 @@ class App(QWidget):
         self.detect_button = QPushButton('Detect Image')
         self.detect_button.clicked.connect(self.detect_image)
         self.layout.addWidget(self.detect_button)
+
+        # Algorithm selection
+        self.algorithm_combo = QComboBox(self)
+        self.algorithm_combo.addItem("Algorithm 1")
+        self.algorithm_combo.addItem("Algorithm 2")
+        self.algorithm_combo.addItem("Algorithm 3")
+        self.layout.addWidget(self.algorithm_combo)
         
         # Image display
         self.image_label = QLabel(self)
         self.layout.addWidget(self.image_label)
+        
+        # Status display
+        self.status_label1 = QLabel(self)
+        self.layout.addWidget(self.status_label1)
+        self.status_label2 = QLabel(self)
+        self.layout.addWidget(self.status_label2)
+        self.status_label3 = QLabel(self)
+        self.layout.addWidget(self.status_label3)
+    
         
         # Set size policy
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -79,6 +95,10 @@ class App(QWidget):
                 result_pixmap = QPixmap(result_image_path)
                 self.image_label.setPixmap(result_pixmap)
                 self.image_label.setScaledContents(False)
+                self.result_label.setText('Detection successful. Result image saved at: ' + result_image_path)
+                self.status_label1.setText('status_label1')
+                self.status_label2.setText('status_label2')
+                self.status_label3.setText('status_label3')
         else:
             self.result_label.setText('Detection failed, no result image found.')
             
