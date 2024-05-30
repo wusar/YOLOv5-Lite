@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QFileDialog, QSizePolicy, QHBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QFileDialog, QSizePolicy, QMessageBox, QHBoxLayout
 from PyQt5.QtGui import QPixmap
 from detect import detect  # Assuming detect and opt are defined in detect.py
 import argparse
@@ -22,6 +22,11 @@ class App(QWidget):
         self.open_button = QPushButton('Open Image')
         self.open_button.clicked.connect(self.open_image)
         self.layout.addWidget(self.open_button)
+
+        # Buttons
+        self.detect_button = QPushButton('Detect Image')
+        self.detect_button.clicked.connect(self.detect_image)
+        self.layout.addWidget(self.detect_button)
         
         # Image display
         self.image_label = QLabel(self)
@@ -41,10 +46,15 @@ class App(QWidget):
     def open_image(self):
         options = QFileDialog.Options()
         options |= QFileDialog.ReadOnly
-        file_name, _ = QFileDialog.getOpenFileName(self, "Open Image File", "", "Images (*.png *.xpm *.jpg *.jpeg);;All Files (*)", options=options)
-        if file_name:
-            # self.display_image(file_name)
-            self.run_detection(file_name)
+        self.file_name, _ = QFileDialog.getOpenFileName(self, "Open Image File", "", "Images (*.png *.xpm *.jpg *.jpeg);;All Files (*)", options=options)
+        if self.file_name:
+            self.display_image(self.file_name)
+    
+    def detect_image(self):
+        if self.file_name:
+            self.run_detection(self.file_name)
+        else:
+            QMessageBox.warning(self, 'Warning', 'Please open an image first.')
     
     def display_image(self, file_path):
         pixmap = QPixmap(file_path)
